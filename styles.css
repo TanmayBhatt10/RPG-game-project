@@ -1,0 +1,42 @@
+html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: black;
+      cursor: crosshair;
+    }
+    canvas {
+      display: block;
+      background-color: black;
+    }
+    #ui {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-family: monospace;
+      font-size: 18px;
+    }
+    #game-over {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: red;
+      font-size: 36px;
+      font-family: monospace;
+      display: none;
+    }
+    #restart-btn {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 20px;
+      padding: 10px;
+      background-color: #222;
+      color: white;
+      border: 2px solid white;
+      display: none;
+      cursor: pointer;
+    }
