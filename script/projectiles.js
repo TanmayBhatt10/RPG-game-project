@@ -96,7 +96,7 @@ export function fireWeapon(state, inputState, canvasWidth, canvasHeight, ctx) {
   const originY = canvasHeight;
   const angle = Math.atan2(inputState.mouse.y - originY, inputState.mouse.x - originX);
 
-  let color = "aqua", radius = 6, speed = 15, damage = 2;
+  let color = "aqua", radius = 6, speed = 15, damage = 3;
 
   let baseDamage;
   if (state.level >= 6 && inputState.currentWeapon === 3) {
