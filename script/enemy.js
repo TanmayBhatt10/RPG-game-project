@@ -1,6 +1,3 @@
-// js/enemy.js
-// Exports: enemies array, Enemy class, spawnEnemy
-
 export const enemies = [];
 
 export class Enemy {
@@ -74,48 +71,81 @@ export class Enemy {
   draw(ctx) {
     if (this.type === 'boss') {
       ctx.save();
+      
+      const scale = 3; // Size multiplier for the pixel art
+      const px = (x, y, color, w = 1, h = 1) => {
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x + (x * scale) - 40, this.y + (y * scale) - 50, w * scale, h * scale);
+      };
+
       if (this.flashTime > 0) {
-        ctx.globalAlpha = 0.8;
-        ctx.fillStyle = "white";
+        ctx.globalAlpha = 0.5 + Math.sin(Date.now() * 0.1) * 0.5;
       }
 
-      ctx.fillStyle = "#8B00FF";
-      ctx.beginPath();
-      ctx.moveTo(this.x, this.y + 40);
-      ctx.lineTo(this.x - 35, this.y);
-      ctx.lineTo(this.x, this.y - 40);
-      ctx.lineTo(this.x + 35, this.y);
-      ctx.closePath();
-      ctx.fill();
+      // Black body outline and base
+      px(4, 6, '#000', 3, 1);   // top head
+      px(3, 7, '#000', 5, 1);
+      px(2, 8, '#000', 7, 1);
+      px(2, 9, '#000', 7, 2);
+      px(1, 11, '#000', 9, 2);
+      px(2, 13, '#000', 7, 3);
+      px(3, 16, '#000', 5, 2);
+      px(1, 18, '#000', 2, 3);  // left leg
+      px(8, 18, '#000', 2, 3);  // right leg
 
-      ctx.fillStyle = "#4B0082";
-      ctx.fillRect(this.x - 60, this.y - 10, 30, 15);
-      ctx.fillRect(this.x - 70, this.y - 20, 15, 10);
-      ctx.fillRect(this.x - 75, this.y - 15, 10, 8);
+      // Cyan/teal flames on head
+      px(4, 2, '#00FFFF', 1, 2);
+      px(5, 1, '#00FFFF', 1, 1);
+      px(6, 2, '#00FFFF', 1, 3);
+      px(7, 4, '#00FFFF', 1, 1);
 
-      ctx.fillRect(this.x + 30, this.y - 10, 30, 15);
-      ctx.fillRect(this.x + 55, this.y - 20, 15, 10);
-      ctx.fillRect(this.x + 65, this.y - 15, 10, 8);
+      // Cyan body fill
+      px(4, 7, '#00CED1', 3, 1);
+      px(3, 8, '#00CED1', 5, 1);
+      px(3, 9, '#00CED1', 5, 2);
+      px(2, 11, '#00CED1', 7, 2);
+      px(3, 13, '#00CED1', 5, 3);
+      px(4, 16, '#00CED1', 3, 2);
 
-      ctx.fillStyle = "#00FF00";
-      for (let i = 0; i < 5; i++) {
-        const offsetX = (Math.random() - 0.5) * 10;
-        const offsetY = -50 - Math.random() * 20;
-        ctx.fillRect(this.x + offsetX - 3, this.y + offsetY, 6, 8);
-      }
+      // Dark cyan shading
+      px(5, 8, '#008B8B', 2, 1);
+      px(4, 9, '#008B8B', 4, 1);
+      px(5, 10, '#008B8B', 2, 1);
+      px(3, 11, '#008B8B', 5, 1);
+      px(4, 12, '#008B8B', 3, 1);
 
-      ctx.fillStyle = "#32CD32";
-      ctx.fillRect(this.x - 8, this.y - 15, 16, 20);
+      // Green eyes
+      px(4, 9, '#00FF00', 1, 1);
+      px(6, 9, '#00FF00', 1, 1);
+
+      // White highlights on body
+      px(2, 18, '#FFFFFF', 1, 2);  // left leg
+      px(3, 18, '#FFFFFF', 1, 1);
+      px(7, 18, '#FFFFFF', 1, 1);  // right leg
+      px(8, 18, '#FFFFFF', 1, 2);
+
+      // Arms/claws
+      px(0, 13, '#000', 2, 2);   // left arm
+      px(0, 15, '#000', 1, 1);
+      px(9, 13, '#000', 2, 2);   // right arm
+      px(10, 15, '#000', 1, 1);
+
+      ctx.globalAlpha = 1;
 
       // healthbar
+      ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+      ctx.fillRect(this.x - 45, this.y - this.radius - 25, 90, 10);
       ctx.fillStyle = "white";
-      ctx.fillRect(this.x - 40, this.y - this.radius - 20, 80, 8);
-      ctx.fillStyle = "red";
-      ctx.fillRect(this.x - 40, this.y - this.radius - 20, 80 * (this.hp / this.maxHp), 8);
+      ctx.fillRect(this.x - 43, this.y - this.radius - 23, 86, 6);
+      ctx.fillStyle = this.hp / this.maxHp > 0.5 ? "#00FF00" : this.hp / this.maxHp > 0.25 ? "#FFFF00" : "#FF0000";
+      ctx.fillRect(this.x - 43, this.y - this.radius - 23, 86 * (this.hp / this.maxHp), 6);
 
       ctx.fillStyle = "yellow";
-      ctx.font = "16px Arial";
-      ctx.fillText(`Lives: ${this.lives}`, this.x - 25, this.y - this.radius - 35);
+      ctx.font = "bold 18px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(`Lives: ${this.lives}`, this.x, this.y - this.radius - 35);
+      ctx.textAlign = "left";
+      
       ctx.restore();
     } else {
       ctx.fillStyle = this.flashTime > 0 ? "white" : this.color;
