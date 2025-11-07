@@ -13,7 +13,8 @@ const state = {
   gameOver: false,
   bossActive: false,
   bossLives: 3,
-  lastSpawnTime: 0
+  lastSpawnTime: 0,
+  fireCooldown: 0  // Added: initialize fireCooldown
 };
 
 // Canvas setup
@@ -85,14 +86,28 @@ function animate(timestamp) {
     state.lastSpawnTime = timestamp;
   }
 
-  // Update & draw enemies
+  // Update enemies first
   // Pass bossProjectiles array so boss can push bullets into it
   enemies.forEach(enemy => enemy.update(player, state.level, canvas.width, canvas.height, bossProjectiles));
-  // filter enemies preserving boss while lives >0
+  
+  // Filter out dead enemies and handle bottom-reached enemies
   for (let i = enemies.length - 1; i >= 0; i--) {
     const e = enemies[i];
+    
+    // Check if non-boss enemy reached bottom (y > canvas.height means it escaped)
+    if (e.y > canvas.height && e.type !== 'boss') {
+      player.hp -= 10;
+      onPlayerDamaged(10);
+      enemies.splice(i, 1); // Remove the enemy
+      if (player.hp <= 0) {
+        onGameOver();
+        return;
+      }
+      continue;
+    }
+    
+    // Remove dead enemies (but preserve boss with remaining lives)
     if (e.hp <= 0 && !(e.type === 'boss' && e.lives > 0)) {
-      // remove fully dead non-boss or boss with no lives
       enemies.splice(i, 1);
     }
   }
@@ -100,11 +115,13 @@ function animate(timestamp) {
 
   // Only fire when mouse button is pressed
   if (inputState.isFiring) {
-    const firingState = { level: state.level, fireCooldown: state.fireCooldown || 0 };
+    const firingState = { level: state.level, fireCooldown: state.fireCooldown };
     fireWeapon(firingState, inputState, canvas.width, canvas.height, ctx);
     state.fireCooldown = firingState.fireCooldown;
+  } else {
+    // Decrease cooldown even when not firing
+    if (state.fireCooldown > 0) state.fireCooldown--;
   }
-
 
   // Update projectiles, collisions, rendering
   updateProjectilesAndCollisions(

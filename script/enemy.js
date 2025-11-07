@@ -66,11 +66,9 @@ export class Enemy {
       let enemySpeed = level >= 5 ? 1.2 : 0.8;
       this.y += enemySpeed;
     }
-
-    if (this.y > canvasHeight && this.type !== 'boss') {
-      // signal: enemy reached bottom (main loop will handle HP reduction)
-      this.hp = 0;
-    }
+    
+    // Note: We don't set hp = 0 here anymore
+    // Main.js will handle enemies that reach the bottom
   }
 
   draw(ctx) {
