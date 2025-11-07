@@ -4,8 +4,8 @@ export const player = {
   y: 0,
   radius: 20,
   color: "cyan",
-  hp: 100,
-  maxHp: 100
+  hp: 120,
+  maxHp: 120
 };
 
 // update player position toward input mouse (smooth)
