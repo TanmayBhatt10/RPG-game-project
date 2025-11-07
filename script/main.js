@@ -1,6 +1,6 @@
 // js/main.js
 import { inputState, initInput } from './input.js';
-import { player, initPlayer, updatePlayer, drawPlayer } from './player.js';
+import { player, initPlayer, updatePlayer, drawPlayer , drawHealthBar } from './player.js';
 import { enemies, spawnEnemy } from './enemy.js';
 import { projectiles, bossProjectiles, fireWeapon, updateProjectilesAndCollisions, laserState } from './projectiles.js';
 import { updateWeaponDisplay, updateXPUI, gainXP } from './ui.js';
@@ -135,9 +135,13 @@ function animate(timestamp) {
   // End condition: if bossActive is false and there is a boss-type enemy removed fully, ensure reset
   // If the boss was defeated, spawnEnemy logic will not re-spawn boss until level 10 again.
   state.bossActive = enemies.some(e => e.type === 'boss' && e.lives > 0);
-
+  
+  // Draw health bar at fixed position (top right) - draw last so it's on top
+  drawHealthBar(ctx, canvas.width);
+  
   requestAnimationFrame(animate);
 }
 
 // start loop
 requestAnimationFrame(animate);
+

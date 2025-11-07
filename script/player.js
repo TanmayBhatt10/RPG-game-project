@@ -27,10 +27,44 @@ export function drawPlayer(ctx) {
   ctx.beginPath();
   ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
   ctx.fill();
+}
 
-  // HP bar under player
+// New function to draw health bar at fixed position
+export function drawHealthBar(ctx, canvasWidth) {
+  const barWidth = 200;
+  const barHeight = 25;
+  const padding = 20;
+  const x = canvasWidth - barWidth - padding;
+  const y = padding;
+
+  // Save context state
+  ctx.save();
+
+  // Background (border)
+  ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+  ctx.fillRect(x - 3, y - 3, barWidth + 6, barHeight + 6);
+
+  // White background
   ctx.fillStyle = "white";
-  ctx.fillRect(player.x - 30, player.y + 30, 60, 6);
-  ctx.fillStyle = "lime";
-  ctx.fillRect(player.x - 30, player.y + 30, 60 * (player.hp / player.maxHp), 6);
+  ctx.fillRect(x, y, barWidth, barHeight);
+
+  // Health bar (green/yellow/red based on HP)
+  const healthPercent = Math.max(0, player.hp / player.maxHp);
+  let healthColor;
+  if (healthPercent > 0.6) healthColor = "#00FF00";
+  else if (healthPercent > 0.3) healthColor = "#FFFF00";
+  else healthColor = "#FF0000";
+
+  ctx.fillStyle = healthColor;
+  ctx.fillRect(x, y, barWidth * healthPercent, barHeight);
+
+  // Health text
+  ctx.fillStyle = "black";
+  ctx.font = "bold 16px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(`HP: ${Math.max(0, Math.floor(player.hp))} / ${player.maxHp}`, x + barWidth / 2, y + barHeight / 2);
+
+  // Restore context state
+  ctx.restore();
 }
