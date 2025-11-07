@@ -9,8 +9,8 @@ export function updateWeaponDisplay(inputState, state) {
   // compute baseDamage same as earlier logic
   let baseDamage;
   if (state.level >= 10 && inputState.currentWeapon === 4) baseDamage = 10;
-  else if (state.level >= 6 && inputState.currentWeapon === 3) baseDamage = 9;
-  else if (state.level >= 3 && inputState.currentWeapon === 2) baseDamage = 6;
+  else if (state.level >= 6 && inputState.currentWeapon === 3) baseDamage = 7;
+  else if (state.level >= 3 && inputState.currentWeapon === 2) baseDamage = 4;
   else baseDamage = 3;
   if (damageEl) damageEl.textContent = baseDamage;
 }
