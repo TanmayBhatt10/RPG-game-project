@@ -96,7 +96,7 @@ export function fireWeapon(state, inputState, canvasWidth, canvasHeight, ctx) {
   const originY = canvasHeight;
   const angle = Math.atan2(inputState.mouse.y - originY, inputState.mouse.x - originX);
 
-  let color = "aqua", radius = 6, speed = 15, damage = 3;
+  let color = "aqua", radius = 6, speed = 15, damage = 2;
 
   let baseDamage;
   if (state.level >= 6 && inputState.currentWeapon === 3) {
@@ -168,8 +168,8 @@ export function updateProjectilesAndCollisions(ctx, canvasWidth, canvasHeight, p
               // boss fully dead
               xpReward = 50;
             }
-          } else if (enemy.type === 'elite') xpReward = 10;
-          else if (enemy.type === 'mini') xpReward = 5;
+          } else if (enemy.type === 'elite') xpReward = 11;
+          else if (enemy.type === 'mini') xpReward = 6;
           else if (enemy.type === 'big') xpReward = 3;
           else xpReward = 1;
           gainXP(xpReward);
