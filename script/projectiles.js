@@ -145,34 +145,87 @@ export function updateProjectilesAndCollisions(ctx, canvasWidth, canvasHeight, p
   });
 
   // projectile hits enemy
+  // enemies.forEach(enemy => {
+  //   projectiles.forEach(p => {
+  //     const dx = enemy.x - p.x;
+  //     const dy = enemy.y - p.y;
+  //     const dist = Math.hypot(dx, dy);
+  //     if (dist < enemy.radius + p.radius && enemy.hp > 0) {
+  //       enemy.hp -= p.damage;
+  //       enemy.flashTime = 5;
+  //       enemy.dmgPopups.push({ dmg: p.damage, timer: 30, x: enemy.x, y: enemy.y });
+  //       p.life = 0;
+  //       if (enemy.hp <= 0) {
+  //         // XP rewards
+  //         let xpReward;
+  //         if (enemy.type === 'boss') {
+  //           enemy.lives--;
+  //           console.log('Boss hit! Lives now:', enemy.lives, 'HP was:', enemy.hp); // ADD THIS
+  //           if (enemy.lives > 0) {
+  //             enemy.hp = enemy.maxHp;
+  //             enemy.flashTime = 30;
+  //             xpReward = 10;
+  //             console.log('Boss HP restored to:', enemy.hp);
+  //           } else {
+  //             // boss fully dead
+  //             xpReward = 50;
+  //             console.log('Boss defeated!');
+  //           }
+  //         } else if (enemy.type === 'elite') xpReward = 11;
+  //         else if (enemy.type === 'mini') xpReward = 6;
+  //         else if (enemy.type === 'big') xpReward = 3;
+  //         else xpReward = 1;
+  //         gainXP(xpReward);
+  //       }
+  //     }
+  //   });
+  // });
+  // projectile hits enemy
   enemies.forEach(enemy => {
+    let bossLifeLost = false; // Track if boss already lost a life this frame
+    
     projectiles.forEach(p => {
       const dx = enemy.x - p.x;
       const dy = enemy.y - p.y;
       const dist = Math.hypot(dx, dy);
-      if (dist < enemy.radius + p.radius && enemy.hp > 0) {
+      
+      // Allow hits even if hp <= 0 for boss (to handle life system)
+      const canHit = enemy.type === 'boss' ? (enemy.lives > 0) : (enemy.hp > 0);
+      
+      if (dist < enemy.radius + p.radius && canHit) {
         enemy.hp -= p.damage;
         enemy.flashTime = 5;
         enemy.dmgPopups.push({ dmg: p.damage, timer: 30, x: enemy.x, y: enemy.y });
         p.life = 0;
+        
         if (enemy.hp <= 0) {
           // XP rewards
           let xpReward;
           if (enemy.type === 'boss') {
-            enemy.lives--;
-            if (enemy.lives > 0) {
-              enemy.hp = enemy.maxHp;
-              enemy.flashTime = 30;
-              xpReward = 10;
-            } else {
-              // boss fully dead
-              xpReward = 50;
+            // Only decrease life once per frame
+            if (!bossLifeLost && enemy.lives > 0) {
+              enemy.lives--;
+              bossLifeLost = true;
+              console.log('Boss hit! Lives now:', enemy.lives, 'HP was:', enemy.hp);
+              
+              if (enemy.lives > 0) {
+                enemy.hp = enemy.maxHp;
+                enemy.flashTime = 30;
+                xpReward = 10;
+                console.log('Boss HP restored to:', enemy.hp);
+              } else {
+                // boss fully dead
+                enemy.hp = 0;
+                xpReward = 50;
+                console.log('Boss defeated!');
+              }
             }
           } else if (enemy.type === 'elite') xpReward = 11;
           else if (enemy.type === 'mini') xpReward = 6;
           else if (enemy.type === 'big') xpReward = 3;
           else xpReward = 1;
-          gainXP(xpReward);
+          
+          if (xpReward) gainXP(xpReward);
         }
       }
     });
