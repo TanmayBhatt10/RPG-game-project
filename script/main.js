@@ -5,6 +5,8 @@ import { enemies, spawnEnemy } from './enemy.js';
 import { projectiles, bossProjectiles, fireWeapon, updateProjectilesAndCollisions, laserState } from './projectiles.js';
 import { updateWeaponDisplay, updateXPUI, gainXP } from './ui.js';
 
+let gameStarted = false
+
 // State container for game-level values
 const state = {
   level: 1,
@@ -16,6 +18,10 @@ const state = {
   lastSpawnTime: 0,
   fireCooldown: 0  // Added: initialize fireCooldown
 };
+
+//start button
+const startScreen = document.getElementById("start-screen");
+const startBtn = document.getElementById("start-btn");
 
 // Canvas setup
 export const canvas = document.getElementById("gameCanvas");
@@ -63,6 +69,16 @@ if (restartBtn) restartBtn.onclick = () => location.reload();
 // initialize UI
 updateWeaponDisplay(inputState, state);
 updateXPUI(state);
+
+//start button
+if (startBtn) {
+  startBtn.onclick = () => {
+    gameStarted = true;
+    if (startScreen) startScreen.style.display = "none";
+    state.lastSpawnTime = performance.now(); // Initialize spawn timer
+    requestAnimationFrame(animate);
+  };
+}
 
 // main animate loop
 function animate(timestamp) {
@@ -112,6 +128,19 @@ function animate(timestamp) {
     }
   }
   enemies.forEach(enemy => enemy.draw(ctx));
+  
+  // Check for victory: level 10, no enemies left, boss was active but defeated
+  if (state.level === 10 && enemies.length === 0 && !state.bossActive) {
+    state.gameOver = true;
+    if (gameOverText) {
+      gameOverText.textContent = "🎉 VICTORY! 🎉";
+      gameOverText.style.color = "lime";
+      gameOverText.style.textShadow = "0 0 20px lime";
+      gameOverText.style.display = "block";
+    }
+    if (restartBtn) restartBtn.style.display = "block";
+    return;
+  }
 
   // Only fire when mouse button is pressed
   if (inputState.isFiring) {
@@ -142,6 +171,5 @@ function animate(timestamp) {
   requestAnimationFrame(animate);
 }
 
-// start loop
-requestAnimationFrame(animate);
+
 

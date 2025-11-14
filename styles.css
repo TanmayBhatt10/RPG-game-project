@@ -40,3 +40,42 @@ html, body {
       display: none;
       cursor: pointer;
     }
+    #start-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.9);
+  padding: 40px;
+  border: 3px solid cyan;
+  border-radius: 10px;
+}
+
+#start-screen h1 {
+  color: cyan;
+  font-family: monospace;
+  font-size: 48px;
+  margin-bottom: 30px;
+  text-shadow: 0 0 10px cyan;
+}
+
+#start-btn {
+  font-size: 24px;
+  padding: 15px 40px;
+  background-color: cyan;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: monospace;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+#start-btn:hover {
+  background-color: white;
+  box-shadow: 0 0 20px cyan;
+  transform: scale(1.1);
+}
